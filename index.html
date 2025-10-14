@@ -1,15 +1,15 @@
-<!-- index.html (最終版 - 使用 URL 參數傳輸) -->
+<!-- index.html (最終架構 - 使用頁面跳轉) -->
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <!-- head 內容保持不變，此處省略 -->
+  <!-- head 內容保持不變 -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>美力時尚診所數據月報</title>
   <meta name="apple-mobile-web-app-title" content="美力時尚診所數據月報">
   <link rel="apple-touch-icon" sizes="180x180" href="https://storage.googleapis.com/aiii-storage-public/Jo/bebetterone_logo.jpg">
   <style>
-    /* CSS 樣式保持不變，此處省略 */
+    /* CSS 樣式保持不變 */
     html, body { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background-color: #f4f4f4; }
     body { display: flex; justify-content: center; align-items: center; }
     .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; }
@@ -17,7 +17,6 @@
     label { display: block; text-align: left; margin-bottom: 0.5rem; }
     input[type="text"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
     button[type="submit"] { background-color: #4CAF50; color: white; padding: 14px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
-    .message { text-align: center; margin-top: 1rem; min-height: 1.2em; }
   </style>
 </head>
 <body>
@@ -30,52 +29,23 @@
       <input type="password" id="password" name="password" required autocomplete="current-password">
       <button type="submit" id="submitButton">登入</button>
     </form>
-    <div id="message" class="message"></div>
   </div>
 
   <script>
-    const APPS_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbwcy8f1sx79pAI2SxgSSUFkE91Y9_EqFrQzlR5WwKf26ErmHvFHSVJ2f5ew5QescNoS/exec";
-
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEr1rCgwJQq8OWhGsBAKCvUXv5rMs96vFWEre91tiWyQeBaPfcCYd4jNSOdmdKSPy_/exec";
     const loginForm = document.getElementById('loginForm');
-    const submitButton = document.getElementById('submitButton');
-    const messageDiv = document.getElementById('message');
 
     loginForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      submitButton.disabled = true;
-      messageDiv.textContent = '驗證中...';
-      messageDiv.style.color = 'blue';
-
+      
       const user = e.target.username.value;
       const pass = e.target.password.value;
 
-      // 關鍵修改：將帳號密碼附加到 URL 作為查詢參數
-      const urlWithParams = `${APPS_SCRIPT_API_URL}?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
-
-      fetch(urlWithParams, {
-        method: 'POST', // 雖然參數在URL上，但仍需用 POST 觸發 doPost
-        redirect: 'follow'
-        // body 是空的，因為資料已經在 URL 上了
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success && data.token) {
-          messageDiv.textContent = '登入成功，正在跳轉...';
-          messageDiv.style.color = 'green';
-          const redirectUrl = APPS_SCRIPT_API_URL + '?sessionToken=' + data.token;
-          setTimeout(() => { window.location.href = redirectUrl; }, 500);
-        } else {
-          messageDiv.textContent = data.message || '發生未知錯誤';
-          messageDiv.style.color = 'red';
-          submitButton.disabled = false;
-        }
-      })
-      .catch(error => {
-        console.error('Fetch Error:', error);
-        messageDiv.textContent = '無法連接至伺服器，請檢查網路連線。';
-        messageDiv.style.color = 'red';
-        submitButton.disabled = false;
-      });
+      // 關鍵修改：不再使用 fetch，而是直接構造一個帶參數的 URL
+      const loginUrl = `${APPS_SCRIPT_URL}?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
+      
+      // 直接讓瀏覽器跳轉到這個 URL，觸發後端的 doGet
+      window.location.href = loginUrl;
     });
   </script>
 </body>
