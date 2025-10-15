@@ -1,52 +1,36 @@
-<!-- index.html (最終架構 - 使用頁面跳轉) -->
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <!-- head 內容保持不變 -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>美力時尚診所數據月報</title>
+
+  <!-- ================== 關鍵的跳轉指令 ================== -->
+  <!-- content="0; ..." 代表 0 秒後跳轉 -->
+  <!-- url=... 後面是您要跳轉到的 Apps Script 網址 -->
+  <meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbys6CEjEITKwyizeqqM0YTIRwgKLKXNbgyZeAJ0fOxBITQ5wMFt58jie4qXFSOmf-8y/exec">
+  <!-- ======================================================= -->
+
+  <title>正在導向至報表系統...</title>
+
+  <!-- Icon 和名稱設定 (為了「加入主畫面」功能，這些仍然非常重要！) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-title" content="美力時尚診所數據月報">
   <link rel="apple-touch-icon" sizes="180x180" href="https://storage.googleapis.com/aiii-storage-public/Jo/bebetterone_logo.jpg">
+
   <style>
-    /* CSS 樣式保持不變 */
-    html, body { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background-color: #f4f4f4; }
-    body { display: flex; justify-content: center; align-items: center; }
-    .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; }
-    h2 { margin-top: 0; margin-bottom: 1.5rem; }
-    label { display: block; text-align: left; margin-bottom: 0.5rem; }
-    input[type="text"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-    button[type="submit"] { background-color: #4CAF50; color: white; padding: 14px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+    /* 為了防止跳轉失敗時頁面空白，我們加上一個簡單的提示訊息 */
+    body { 
+      font-family: sans-serif; 
+      text-align: center; 
+      padding-top: 50px; 
+      background-color: #f4f4f4;
+    }
+    a {
+      color: #007bff;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>用戶登入</h2>
-    <form id="loginForm">
-      <label for="username">帳號:</label>
-      <input type="text" id="username" name="username" required autocomplete="username">
-      <label for="password">密碼:</label>
-      <input type="password" id="password" name="password" required autocomplete="current-password">
-      <button type="submit" id="submitButton">登入</button>
-    </form>
-  </div>
-
-  <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEr1rCgwJQq8OWhGsBAKCvUXv5rMs96vFWEre91tiWyQeBaPfcCYd4jNSOdmdKSPy_/exec";
-    const loginForm = document.getElementById('loginForm');
-
-    loginForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const user = e.target.username.value;
-      const pass = e.target.password.value;
-
-      // 關鍵修改：不再使用 fetch，而是直接構造一個帶參數的 URL
-      const loginUrl = `${APPS_SCRIPT_URL}?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
-      
-      // 直接讓瀏覽器跳轉到這個 URL，觸發後端的 doGet
-      window.location.href = loginUrl;
-    });
-  </script>
+  <p>正在將您導向至報表系統...</p>
+  <p>如果頁面沒有自動跳轉，請 <a href="https://script.google.com/macros/s/AKfycbys6CEjEITKwyizeqqM0YTIRwgKLKXNbgyZeAJ0fOxBITQ5wMFt58jie4qXFSOmf-8y/exec">點擊此處</a>。</p>
 </body>
 </html>
