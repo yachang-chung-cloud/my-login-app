@@ -1,36 +1,95 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-
-  <!-- ================== 關鍵的跳轉指令 ================== -->
-  <!-- content="0; ..." 代表 0 秒後跳轉 -->
-  <!-- url=... 後面是您要跳轉到的 Apps Script 網址 -->
-  <meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbyHIBNfDbjcvz_ok9J-K5F2CdWYG6Ize1sl2_bU57wn0ppU_FuwDPupJVTY_nuKl8Dm/exec">
-  <!-- ======================================================= -->
-
-  <title>正在導向至報表系統...</title>
-
-  <!-- Icon 和名稱設定 (為了「加入主畫面」功能，這些仍然非常重要！) -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="apple-mobile-web-app-title" content="美力時尚診所數據月報">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://storage.googleapis.com/aiii-storage-public/Jo/bebetterone_logo.jpg">
-
-  <style>
-    /* 為了防止跳轉失敗時頁面空白，我們加上一個簡單的提示訊息 */
-    body { 
-      font-family: sans-serif; 
-      text-align: center; 
-      padding-top: 50px; 
-      background-color: #f4f4f4;
-    }
-    a {
-      color: #007bff;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFF 分享功能測試</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        h1 { font-size: 24px; margin-bottom: 30px; }
+        h2 { font-size: 18px; color: #555; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 10px;}
+        
+        .btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 15px auto;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        .btn:active { transform: scale(0.98); }
+        
+        /* 區分不同活動顏色 */
+        .btn-xenda { background: linear-gradient(135deg, #E480BD 0%, #F69DDF 100%); }
+        .btn-nnhcp { background: linear-gradient(135deg, #0133DA 0%, #05AAFF 100%); }
+        
+        /* 外部開啟按鈕樣式區別 */
+        .external {
+            position: relative;
+        }
+        .external::after {
+            content: '(外部瀏覽器)';
+            display: block;
+            font-size: 12px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
-  <p>正在將您導向至報表系統...</p>
-  <p>如果頁面沒有自動跳轉，請 <a href="https://script.google.com/macros/s/AKfycbyHIBNfDbjcvz_ok9J-K5F2CdWYG6Ize1sl2_bU57wn0ppU_FuwDPupJVTY_nuKl8Dm/exec">點擊此處</a>。</p>
+
+    <h1>LIFF 分享測試入口</h1>
+    <p style="font-size:12px; color:#888;">UID: U4643...6bd</p>
+
+    <!-- 1. 纖達日記測試區 -->
+    <h2>🌸 纖達日記 (Xenda)</h2>
+    
+    <!-- 內部開啟 (In-App Browser) -->
+    <a href="https://yachang-chung-cloud.github.io/share-test/?campaign=xenda&uid=U4643e5713229bd5b94bb00ad6dd4c6bd" 
+       class="btn btn-xenda">
+       直接開啟
+    </a>
+
+    <!-- 外部開啟 (External Browser) -->
+    <a href="https://yachang-chung-cloud.github.io/share-test/?campaign=xenda&uid=U4643e5713229bd5b94bb00ad6dd4c6bd&openExternalBrowser=1" 
+       class="btn btn-xenda external">
+       外部開啟
+    </a>
+
+
+    <!-- 2. NNHCP 測試區 -->
+    <h2>🔵 NNHCP 活動</h2>
+
+    <!-- 內部開啟 (In-App Browser) -->
+    <a href="https://yachang-chung-cloud.github.io/share-test/?campaign=nnhcp&uid=U4643e5713229bd5b94bb00ad6dd4c6bd" 
+       class="btn btn-nnhcp">
+       直接開啟
+    </a>
+
+    <!-- 外部開啟 (External Browser) -->
+    <a href="https://yachang-chung-cloud.github.io/share-test/?campaign=nnhcp&uid=U4643e5713229bd5b94bb00ad6dd4c6bd&openExternalBrowser=1" 
+       class="btn btn-nnhcp external">
+       外部開啟
+    </a>
+
+    <script>
+        // 簡單的 Console Log 方便除錯
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('LIFF Test Page Loaded');
+        });
+    </script>
 </body>
 </html>
