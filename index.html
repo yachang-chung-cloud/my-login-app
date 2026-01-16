@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIFF 分享功能測試</title>
+    <!-- 引入 LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -11,9 +13,10 @@
             text-align: center;
             background-color: #f0f0f0;
         }
-        h1 { font-size: 24px; margin-bottom: 30px; }
-        h2 { font-size: 18px; color: #555; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 10px;}
+        h1 { font-size: 24px; margin-bottom: 20px; }
+        h2 { font-size: 16px; color: #555; margin-top: 30px; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 10px;}
         
+        /* 按鈕樣式 */
         .btn {
             display: block;
             width: 100%;
@@ -23,73 +26,136 @@
             font-size: 16px;
             font-weight: bold;
             color: white;
-            background-color: #007bff;
             border: none;
             border-radius: 8px;
             text-decoration: none;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
+            transition: transform 0.1s, opacity 0.2s;
+            cursor: pointer;
+            opacity: 0.5; /* 初始未初始化前半透明 */
+            pointer-events: none; /* 初始不可點擊 */
+        }
+        .btn.ready {
+            opacity: 1;
+            pointer-events: auto;
         }
         .btn:active { transform: scale(0.98); }
         
-        /* 區分不同活動顏色 */
+        /* 顏色區分 */
         .btn-xenda { background: linear-gradient(135deg, #E480BD 0%, #F69DDF 100%); }
         .btn-nnhcp { background: linear-gradient(135deg, #0133DA 0%, #05AAFF 100%); }
         
-        /* 外部開啟按鈕樣式區別 */
-        .external {
-            position: relative;
-        }
+        /* 外部瀏覽器標記 */
+        .external { position: relative; }
         .external::after {
-            content: '(外部瀏覽器)';
+            content: '(強制外部開啟)';
             display: block;
             font-size: 12px;
             font-weight: normal;
+            margin-top: 4px;
             opacity: 0.9;
         }
+
+        #status { font-size: 12px; color: #888; margin-bottom: 20px; }
+        #error-msg { color: red; font-size: 12px; display: none; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <h1>LIFF 分享測試入口</h1>
-    <p style="font-size:12px; color:#888;">UID: U4643...6bd</p>
+    <div id="status">LIFF 初始化中...</div>
+    <div id="error-msg"></div>
 
     <!-- 1. 纖達日記測試區 -->
     <h2>🌸 纖達日記 (Xenda)</h2>
     
-    <!-- 內部開啟 (In-App Browser) -->
-    <a href="https://yachang-chung-cloud.github.io/share-test/?campaign=xenda&uid=U4643e5713229bd5b94bb00ad6dd4c6bd" 
-       class="btn btn-xenda">
-       直接開啟
-    </a>
+    <button onclick="openLink('xenda', false)" class="btn btn-xenda">
+       在 LIFF 內部開啟
+    </button>
 
-    <!-- 外部開啟 (External Browser) -->
-    <a href="https://yachang-chung-cloud.github.io/share-test/?campaign=xenda&uid=U4643e5713229bd5b94bb00ad6dd4c6bd&openExternalBrowser=1" 
-       class="btn btn-xenda external">
-       外部開啟
-    </a>
+    <button onclick="openLink('xenda', true)" class="btn btn-xenda external">
+       外部瀏覽器開啟
+    </button>
 
 
     <!-- 2. NNHCP 測試區 -->
     <h2>🔵 NNHCP 活動</h2>
 
-    <!-- 內部開啟 (In-App Browser) -->
-    <a href="https://yachang-chung-cloud.github.io/share-test/?campaign=nnhcp&uid=U4643e5713229bd5b94bb00ad6dd4c6bd" 
-       class="btn btn-nnhcp">
-       直接開啟
-    </a>
+    <button onclick="openLink('nnhcp', false)" class="btn btn-nnhcp">
+       在 LIFF 內部開啟
+    </button>
 
-    <!-- 外部開啟 (External Browser) -->
-    <a href="https://yachang-chung-cloud.github.io/share-test/?campaign=nnhcp&uid=U4643e5713229bd5b94bb00ad6dd4c6bd&openExternalBrowser=1" 
-       class="btn btn-nnhcp external">
-       外部開啟
-    </a>
+    <button onclick="openLink('nnhcp', true)" class="btn btn-nnhcp external">
+       外部瀏覽器開啟
+    </button>
 
     <script>
-        // 簡單的 Console Log 方便除錯
+        // ==========================================
+        // ⚠️ 重要：請在此處填入您的 LIFF ID
+        // 例如：'1657000000-xxxxxxxxx'
+        // ==========================================
+        const MY_LIFF_ID = '2004052521-mcLyBvRu'; 
+        
+        // 設定目標網址 (這是您先前部署的 GitHub Pages 網址)
+        const BASE_URL = 'https://yachang-chung-cloud.github.io/share-test/';
+        const UID = 'U4643e5713229bd5b94bb00ad6dd4c6bd';
+
+        // 初始化 LIFF
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('LIFF Test Page Loaded');
+            if (MY_LIFF_ID === '請替換_您的_LIFF_ID') {
+                showError('錯誤：請編輯 HTML 檔案並填入正確的 LIFF ID');
+                return;
+            }
+
+            liff.init({ liffId: MY_LIFF_ID })
+                .then(() => {
+                    // 初始化成功
+                    document.getElementById('status').textContent = 'LIFF Ready (已登入)';
+                    if (!liff.isLoggedIn()) {
+                        liff.login();
+                    } else {
+                        enableButtons();
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    showError('LIFF 初始化失敗: ' + err.message);
+                });
         });
+
+        function enableButtons() {
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.classList.add('ready');
+            });
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error-msg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            document.getElementById('status').textContent = '發生錯誤';
+        }
+
+        /**
+         * 開啟連結的函式
+         * @param {string} campaign - 活動代碼 (xenda / nnhcp)
+         * @param {boolean} isExternal - 是否強制用外部瀏覽器開啟
+         */
+        function openLink(campaign, isExternal) {
+            // 組合目標網址
+            const targetUrl = `${BASE_URL}?campaign=${campaign}&uid=${UID}`;
+
+            if (isExternal) {
+                // 使用 LIFF SDK API 強制外部開啟 (解決 Android 痛點)
+                liff.openWindow({
+                    url: targetUrl,
+                    external: true
+                });
+            } else {
+                // 在 LIFF 內部直接跳轉
+                window.location.href = targetUrl;
+            }
+        }
     </script>
 </body>
 </html>
